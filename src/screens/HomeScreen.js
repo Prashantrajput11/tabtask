@@ -2,6 +2,7 @@ import {SafeAreaView, ScrollView, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import Header from '../components/Header';
 import {TEST_USER} from '../constant';
+import TabBar from '../components/Tab';
 
 const HomeScreen = () => {
   return (
@@ -14,6 +15,8 @@ const HomeScreen = () => {
           lastName={TEST_USER.lastName}
           bio={TEST_USER.bio}
         />
+
+        <TabBar />
       </ScrollView>
     </SafeAreaView>
   );
