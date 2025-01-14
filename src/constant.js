@@ -6,3 +6,25 @@ export const TEST_USER = {
   lastName: 'Tanwar',
   bio: 'Software Developer | Tech Enthusiast | Lifelong Learner',
 };
+
+// Sample video data
+export const videoData = [
+  {
+    id: '1',
+    uri: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+    thumbnail:
+      'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/images/BigBuckBunny.jpg',
+  },
+  {
+    id: '2',
+    uri: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4',
+    thumbnail:
+      'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/images/Sintel.jpg',
+  },
+  {
+    id: '3',
+    uri: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
+    thumbnail:
+      'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/images/ElephantsDream.jpg',
+  },
+];

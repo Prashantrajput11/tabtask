@@ -1,12 +1,23 @@
-import {FlatList, Pressable, StyleSheet, Text, View, Image} from 'react-native';
+import {
+  FlatList,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  Animated,
+  ScrollView,
+} from 'react-native';
 import React, {useRef, useState} from 'react';
 import VideoPlayer from 'react-native-video-player';
+import {TEST_USER, videoData} from '../constant';
+import VoiceText from './VoiceText';
+import Header from './Header';
 
 const Tab = () => {
   const playerRef = useRef(null);
 
-  const background = require('../assets/vid1.mp4');
-  const tabs = ['Photos', 'Videos', 'Tagging'];
+  const tabs = ['Photos', 'Videos', 'Tagging', 'Voice'];
   const [activeTab, setActiveTab] = useState(0);
 
   const photoData = Array(45)
@@ -18,8 +29,9 @@ const Tab = () => {
 
   const renderPhotoGrid = () => (
     <FlatList
+      key="photos"
       data={photoData}
-      numColumns={4}
+      numColumns={3}
       keyExtractor={item => item.id}
       renderItem={({item}) => (
         <View style={styles.photoContainer}>
@@ -31,20 +43,25 @@ const Tab = () => {
   );
 
   const renderVideosTab = () => (
-    <View style={styles.videoContainer}>
-      <VideoPlayer
-        ref={playerRef}
-        endWithThumbnail
-        thumbnail={{
-          uri: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/images/BigBuckBunny.jpg',
-        }}
-        source={{
-          uri: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
-        }}
-        onError={e => console.log(e)}
-        showDuration={true}
-      />
-    </View>
+    <FlatList
+      data={videoData}
+      key="videos"
+      keyExtractor={item => item.id}
+      renderItem={({item}) => (
+        <View style={styles.videoContainer}>
+          <VideoPlayer
+            ref={playerRef}
+            endWithThumbnail
+            thumbnail={{uri: item.thumbnail}}
+            source={{uri: item.uri}}
+            onError={e => console.log(e)}
+            showDuration={true}
+          />
+        </View>
+      )}
+      contentContainerStyle={styles.videoListContainer}
+      showsVerticalScrollIndicator={false}
+    />
   );
 
   const renderTaggingTab = () => (
@@ -52,6 +69,7 @@ const Tab = () => {
       <Text style={styles.text}>Tagging Content</Text>
     </View>
   );
+  const renderVoiceToTextTab = () => <VoiceText />;
 
   const renderTabContent = () => {
     switch (activeTab) {
@@ -61,6 +79,8 @@ const Tab = () => {
         return renderVideosTab();
       case 2:
         return renderTaggingTab();
+      case 3:
+        return renderVoiceToTextTab();
       default:
         return null;
     }
@@ -68,20 +88,41 @@ const Tab = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.tabBarContainer}>
-        {tabs.map((tab, index) => (
-          <Pressable
-            key={index}
-            style={[
-              styles.tabButton,
-              activeTab === index && styles.activeTabButton,
-            ]}
-            onPress={() => setActiveTab(index)}>
-            <Text style={styles.tabOptions}>{tab}</Text>
-          </Pressable>
-        ))}
-      </View>
-      <View style={styles.contentWrapper}>{renderTabContent()}</View>
+      <FlatList
+        ListHeaderComponent={
+          <>
+            <Header
+              imageUrl={TEST_USER.imageUrl}
+              userName={TEST_USER.userName}
+              firstName={TEST_USER.firstName}
+              lastName={TEST_USER.lastName}
+              bio={TEST_USER.bio}
+            />
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={styles.tabBarContainer}
+              contentContainerStyle={styles.tabBarContentContainer}>
+              {tabs.map((tab, index) => (
+                <Pressable
+                  key={index}
+                  style={[
+                    styles.tabButton,
+                    activeTab === index && styles.activeTabButton,
+                  ]}
+                  onPress={() => setActiveTab(index)}>
+                  <Text style={styles.tabOptions}>{tab}</Text>
+                </Pressable>
+              ))}
+            </ScrollView>
+          </>
+        }
+        data={[]}
+        renderItem={null}
+        ListFooterComponent={
+          <View style={styles.contentWrapper}>{renderTabContent()}</View>
+        }
+      />
     </View>
   );
 };
@@ -91,15 +132,21 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   tabBarContainer: {
+    backgroundColor: '#f8f8f8',
+    zIndex: 10,
+  },
+  tabBarContentContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
   },
+
   tabButton: {
     paddingHorizontal: 16,
     paddingVertical: 12,
   },
   tabOptions: {
     color: '#000',
+    fontWeight: '500',
   },
   activeTabButton: {
     borderBottomWidth: 2,
@@ -115,35 +162,25 @@ const styles = StyleSheet.create({
   },
   text: {
     color: '#000',
+    fontSize: 18,
   },
   photoContainer: {
-    flex: 1 / 4,
+    flex: 1 / 3,
     aspectRatio: 1,
     padding: 1,
   },
   photo: {
     flex: 1,
+    resizeMode: 'cover',
   },
   gridContainer: {
     padding: 1,
   },
-  backgroundVideo: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    bottom: 0,
-    right: 0,
+  videoListContainer: {
+    padding: 5,
   },
   videoContainer: {
-    width: '100%',
-    height: 300,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#000',
-  },
-  video: {
-    width: '100%',
-    height: 200,
+    marginVertical: 10,
   },
 });
 
