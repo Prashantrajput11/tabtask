@@ -3,10 +3,12 @@ import React from 'react';
 import Header from '../components/Header';
 import {TEST_USER} from '../constant';
 import TabBar from '../components/Tab';
+import CustomTab from '../components/CustomTab';
+import CVideoPlayer from '../components/CVideoPlayer';
 
 const HomeScreen = () => {
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: '#000'}}>
+    <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
       <ScrollView>
         <Header
           imageUrl={TEST_USER.imageUrl}
@@ -17,6 +19,10 @@ const HomeScreen = () => {
         />
 
         <TabBar />
+
+        {/* <CVideoPlayer /> */}
+
+        {/* <CustomTab /> */}
       </ScrollView>
     </SafeAreaView>
   );
