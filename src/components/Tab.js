@@ -1,3 +1,4 @@
+// Tab.js
 import {
   FlatList,
   Pressable,
@@ -29,7 +30,6 @@ const Tab = () => {
 
   const renderPhotoGrid = () => (
     <FlatList
-      key="photos"
       data={photoData}
       numColumns={3}
       keyExtractor={item => item.id}
@@ -39,13 +39,13 @@ const Tab = () => {
         </View>
       )}
       contentContainerStyle={styles.gridContainer}
+      showsVerticalScrollIndicator={false}
     />
   );
 
   const renderVideosTab = () => (
     <FlatList
       data={videoData}
-      key="videos"
       keyExtractor={item => item.id}
       renderItem={({item}) => (
         <View style={styles.videoContainer}>
@@ -69,6 +69,7 @@ const Tab = () => {
       <Text style={styles.text}>Tagging Content</Text>
     </View>
   );
+
   const renderVoiceToTextTab = () => <VoiceText />;
 
   const renderTabContent = () => {
@@ -85,6 +86,11 @@ const Tab = () => {
         return null;
     }
   };
+
+  // Modify renderItem to render the tab content
+  const renderItem = () => (
+    <View style={styles.contentWrapper}>{renderTabContent()}</View>
+  );
 
   return (
     <View style={styles.container}>
@@ -111,17 +117,24 @@ const Tab = () => {
                     activeTab === index && styles.activeTabButton,
                   ]}
                   onPress={() => setActiveTab(index)}>
-                  <Text style={styles.tabOptions}>{tab}</Text>
+                  <Text
+                    style={[
+                      styles.tabOptions,
+                      activeTab === index && styles.activeTabOptions,
+                    ]}>
+                    {tab}
+                  </Text>
                 </Pressable>
               ))}
             </ScrollView>
           </>
         }
-        data={[]}
-        renderItem={null}
-        ListFooterComponent={
-          <View style={styles.contentWrapper}>{renderTabContent()}</View>
-        }
+        data={[{key: 'content'}]}
+        renderItem={renderItem}
+        stickyHeaderIndices={[1]}
+        keyExtractor={item => item.key}
+        showsVerticalScrollIndicator={false}
+        key={`tab-list-${activeTab}`}
       />
     </View>
   );
@@ -134,6 +147,8 @@ const styles = StyleSheet.create({
   tabBarContainer: {
     backgroundColor: '#f8f8f8',
     zIndex: 10,
+    borderBottomWidth: 1,
+    borderColor: '#ddd',
   },
   tabBarContentContainer: {
     flexDirection: 'row',
@@ -148,17 +163,23 @@ const styles = StyleSheet.create({
     color: '#000',
     fontWeight: '500',
   },
+  activeTabOptions: {
+    color: 'tomato',
+    fontWeight: 'bold',
+  },
   activeTabButton: {
     borderBottomWidth: 2,
     borderBottomColor: 'tomato',
   },
   contentWrapper: {
     flex: 1,
+    paddingTop: 10, // Optional: Add some padding if needed
   },
   contentContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    paddingVertical: 20,
   },
   text: {
     color: '#000',
